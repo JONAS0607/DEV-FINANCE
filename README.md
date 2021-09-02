@@ -7,8 +7,8 @@ A cada 25 minutos faz uma parada de 5 min para fazer qualquer coisa
 Estudar figma para aprender a fazer os layouts
 
 # Bora Codar
-[] teste de escrita com colchetes
-[] só pra ver como fica
+- [] teste de escrita com colchetes
+- [] só pra ver como fica
 - Estrutura da aplicação com HTML 
     - tags para cada parte do body de uma forma semântica 
     - header,main,footer **são as principais** 
