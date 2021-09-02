@@ -8,8 +8,8 @@ Estudar figma para aprender a fazer os layouts
 
 # Bora Codar
 
--[] Estrutura da aplicação com HTML 
+- Estrutura da aplicação com HTML 
     - tags para cada parte do body de uma forma semântica 
     - header,main,footer **são as principais** 
     - id para partes principais onde mostra a importância do bloco - class para as demais ex card
--[] Estilização com CSS
+- Estilização com CSS
