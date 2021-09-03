@@ -17,3 +17,4 @@ Estudar figma para aprender a fazer os layouts
 
 
 - [pontoDeParada]2:
+- [ok] Aula 1
