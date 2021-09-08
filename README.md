@@ -128,4 +128,4 @@ te deixar por dentro de tudo.
 # FLUXO DAS AULAS
 - [pontoDeParada]2:
 - [ok] Aula 1
-- [] Aula 2
+- [ok] Aula 2
