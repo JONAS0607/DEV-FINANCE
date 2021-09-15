@@ -11,24 +11,21 @@ const modal = {
   },
 };
 
+//Guardando no Storage do Navegador
+const Storage = {
+  get() {
+    return JSON.parse(localStorage.getItem('dev.finances:transactions')) || [];
+  },
+  set(transactions) {
+    localStorage.setItem(
+      'dev.finances:transactions',
+      JSON.stringify(transactions)
+    );
+  },
+};
+
 const Transaction = {
-  all: [
-    {
-      description: 'Luz',
-      amount: -20010,
-      date: '23/01/2021',
-    },
-    {
-      description: 'Criação WebSite',
-      amount: 50050,
-      date: '23/01/2021',
-    },
-    {
-      description: 'Agua',
-      amount: -10010,
-      date: '23/01/2021',
-    },
-  ],
+  all: Storage.get(),
   add(transaction) {
     Transaction.all.push(transaction);
     App.reload();
@@ -74,12 +71,12 @@ const DOM = {
 
   addTransaction(transaction, index) {
     const tr = document.createElement('tr');
-    tr.innerHTML = DOM.innerHTMLTransaction(transaction);
-
+    tr.innerHTML = DOM.innerHTMLTransaction(transaction, index);
+    tr.dataset.index = index;
     DOM.transactionContainer.appendChild(tr);
   },
 
-  innerHTMLTransaction(transaction) {
+  innerHTMLTransaction(transaction, index) {
     const CSSclass = transaction.amount > 0 ? 'income' : 'expense';
     const amount = Utils.formatCurrency(transaction.amount);
 
@@ -87,7 +84,7 @@ const DOM = {
          <td class="description">${transaction.description}</td>
           <td class="${CSSclass}">${amount}</td>
           <td class="${CSSclass}">${transaction.date}</td>
-          <td><img src="./img/minus.svg" alt="Remover Transação" </td>    
+          <td><img onclick="Transaction.remove(${index})" src="./img/minus.svg" alt="Remover Transação" </td>    
     `;
     return html;
   },
@@ -109,7 +106,7 @@ const DOM = {
 
 const Utils = {
   formatAmount(value) {
-    value = Number(value) * 100;
+    value = Number(value.replace(/\,\./g, '')) * 100;
     return value;
   },
   formatDate(date) {
@@ -146,11 +143,15 @@ const Form = {
     };
   },
   formateData() {
-    let { amount, date } = Form.getValues();
+    let { description, amount, date } = Form.getValues();
 
     amount = Utils.formatAmount(amount);
     date = Utils.formatDate(date);
-    console.log(date);
+    return {
+      description,
+      amount,
+      date,
+    };
   },
 
   validateFields() {
@@ -164,20 +165,30 @@ const Form = {
     }
     // console.log(date);
   },
+  saveTransaction(transaction) {
+    Transaction.add(transaction);
+  },
+  clearFields() {
+    Form.description.value = '';
+    Form.amount.value = '';
+    Form.date.value = '';
+  },
 
   submit(event) {
     event.preventDefault();
     try {
       //verificando se as informações foram preenchidas
-      // Form.validateFields();
+      Form.validateFields();
       //formatar os dados para salvar
-      Form.formateData();
+      const transaction = Form.formateData();
       //salvar
+      Form.saveTransaction(transaction);
       //apagar os dados do formulário
-
+      Form.clearFields();
       //modal feche
-
+      modal.close();
       //atualizar a aplicação
+      // App.reload(); já temos no App.add()
     } catch (error) {
       //Pode colocar outra tela para aparecer o erro
       alert(error.message);
@@ -187,11 +198,12 @@ const Form = {
 
 const App = {
   init() {
-    Transaction.all.forEach((transaction) => {
-      DOM.addTransaction(transaction);
+    Transaction.all.forEach((transaction, index) => {
+      DOM.addTransaction(transaction, index);
     });
 
     DOM.updateBalance();
+    Storage.set(Transaction.all);
   },
   reload() {
     DOM.clearTransactions();
@@ -201,4 +213,3 @@ const App = {
 
 App.init();
 
-Transaction.remove(0);
